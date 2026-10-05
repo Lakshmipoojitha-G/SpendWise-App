@@ -243,8 +243,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
+    "https://spendwise-frontend-4bik.onrender.com",
 ]
-
+CORS_ALLOW_CREDENTIALS = True
 # Add deployed React URL through environment variable later.
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 
