@@ -36,46 +36,19 @@ function Navbar({
     function handleDashboard() {
         setMobileOpen(false);
         setOpen(false);
-
         onDashboard();
-
-        // Always return to the very top
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
     }
 
     function handleTransactions() {
         setMobileOpen(false);
         setOpen(false);
-
         onTransactions();
-
-        setTimeout(() => {
-            document
-                .getElementById("transactions")
-                ?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                });
-        }, 100);
     }
 
     function handleAnalytics() {
         setMobileOpen(false);
         setOpen(false);
-
         onAnalytics();
-
-        setTimeout(() => {
-            document
-                .getElementById("analytics")
-                ?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                });
-        }, 100);
     }
 
     return (
@@ -130,11 +103,11 @@ function Navbar({
                         onClick={() => setOpen(!open)}
                     >
                         <span className="avatar">
-                            {user.name.charAt(0).toUpperCase()}
+                            {(user?.name || "U").charAt(0).toUpperCase()}
                         </span>
 
                         <span className="profile-name">
-                            {user.name}
+                            {user?.name || "User"}
                         </span>
 
                         <span
@@ -149,12 +122,12 @@ function Navbar({
                         <div className="profile-dropdown">
                             <div className="dropdown-user">
                                 <div className="dropdown-avatar">
-                                    {user.name.charAt(0).toUpperCase()}
+                                    {(user?.name || "U").charAt(0).toUpperCase()}
                                 </div>
 
                                 <div>
-                                    <strong>{user.name}</strong>
-                                    <small>{user.email}</small>
+                                    <strong>{user?.name || "User"}</strong>
+                                    <small>{user?.email || ""}</small>
                                 </div>
                             </div>
 

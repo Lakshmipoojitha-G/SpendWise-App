@@ -24,7 +24,7 @@ class BudgetView(APIView):
         return self._save(request)
 
     def _save(self, request):
-        budget, created = Budget.objects.get_or_create(user=request.user, defaults={"amount": 0})
+        budget, _ = Budget.objects.get_or_create(user=request.user, defaults={"amount": 0})
         serializer = BudgetSerializer(budget, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()

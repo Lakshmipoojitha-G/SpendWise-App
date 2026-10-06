@@ -1,14 +1,5 @@
 import { useMemo } from "react";
-
-const ICONS = {
-    Food: "🍔",
-    Transportation: "🚗",
-    Shopping: "🛍️",
-    Bills: "💡",
-    Entertainment: "🎬",
-    Health: "❤️",
-    Other: "📦",
-};
+import { CATEGORY_ICONS } from "../constants";
 
 function CategoryAnalytics({ categoryTotals }) {
     const categories = useMemo(() => {
@@ -64,7 +55,7 @@ function CategoryAnalytics({ categoryTotals }) {
                             <div className="category-card" key={category}>
                                 <div className="category-info">
                                     <div className="category-icon">
-                                        {ICONS[category] || "📦"}
+                                        {CATEGORY_ICONS[category] || "📦"}
                                     </div>
 
                                     <div>

@@ -79,7 +79,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         kwargs["partial"] = True
-        response = super().update(request, *args, **kwargs)
+        super().update(request, *args, **kwargs)
         # Return full user data after update
         return Response(UserSerializer(self.get_object()).data)
 

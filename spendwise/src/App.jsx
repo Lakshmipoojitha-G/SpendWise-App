@@ -9,26 +9,7 @@ import ExpenseList from "./components/ExpenseList";
 import CategoryAnalytics from "./components/CategoryAnalytics";
 
 import { authAPI, expensesAPI, budgetAPI, getAccessToken } from "./api";
-
-const CATEGORIES = [
-  "Food",
-  "Transportation",
-  "Shopping",
-  "Bills",
-  "Entertainment",
-  "Health",
-  "Other",
-];
-
-const CATEGORY_ICONS = {
-  Food: "🍔",
-  Transportation: "🚗",
-  Shopping: "🛍️",
-  Bills: "💡",
-  Entertainment: "🎬",
-  Health: "❤️",
-  Other: "📦",
-};
+import { CATEGORIES, CATEGORY_ICONS } from "./constants";
 
 const emptyExpense = {
   description: "",
@@ -360,16 +341,22 @@ function App() {
           setCurrentPage("dashboard");
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}
-        onTransactions={() =>
-          document
-            .getElementById("transactions")
-            ?.scrollIntoView({ behavior: "smooth" })
-        }
-        onAnalytics={() =>
-          document
-            .getElementById("analytics")
-            ?.scrollIntoView({ behavior: "smooth" })
-        }
+        onTransactions={() => {
+          setCurrentPage("dashboard");
+          setTimeout(() => {
+            document
+              .getElementById("transactions")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 50);
+        }}
+        onAnalytics={() => {
+          setCurrentPage("dashboard");
+          setTimeout(() => {
+            document
+              .getElementById("analytics")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 50);
+        }}
         onProfile={() => setCurrentPage("profile")}
         onLogoutRequest={handleLogoutRequest}
       />

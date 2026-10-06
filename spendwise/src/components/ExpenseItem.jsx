@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
-
-const ICONS = {
-    Food: "🍔",
-    Transportation: "🚗",
-    Shopping: "🛍️",
-    Bills: "💡",
-    Entertainment: "🎬",
-    Health: "❤️",
-    Other: "📦",
-};
-
-const CATEGORIES = Object.keys(ICONS);
+import { CATEGORIES, CATEGORY_ICONS } from "../constants";
 
 function ExpenseItem({
     expense,
@@ -116,7 +105,7 @@ function ExpenseItem({
                         >
                             {CATEGORIES.map((category) => (
                                 <option key={category} value={category}>
-                                    {ICONS[category]} {category}
+                                    {CATEGORY_ICONS[category]} {category}
                                 </option>
                             ))}
                         </select>
@@ -168,7 +157,7 @@ function ExpenseItem({
         <article className="expense-item">
             <div className="expense-left">
                 <div className="expense-icon">
-                    {ICONS[expense.category] || "📦"}
+                    {CATEGORY_ICONS[expense.category] || "📦"}
                 </div>
 
                 <div>

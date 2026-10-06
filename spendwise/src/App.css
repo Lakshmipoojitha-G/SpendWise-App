@@ -1469,107 +1469,6 @@ body {
   font-size: 20px;
 }
 
-/* DEMO */
-
-.demo-section {
-  margin-top: 24px;
-}
-
-.demo-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #9aa39d;
-  font-size: 9px;
-  margin-bottom: 14px;
-}
-
-.demo-divider::before,
-.demo-divider::after {
-  content: "";
-  height: 1px;
-  background: var(--border);
-  flex: 1;
-}
-
-.demo-button {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px;
-  border: 1px solid #d8e4db;
-  border-radius: 13px;
-  background: #f4f8f5;
-  color: var(--green);
-  text-align: left;
-  transition: 0.25s ease;
-}
-
-.demo-button:hover {
-  background: #eaf2ec;
-  border-color: #bcd0c2;
-  transform: translateY(-2px);
-}
-
-.demo-button-icon {
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
-  background: var(--green);
-  color: white;
-}
-
-.demo-button strong,
-.demo-button small {
-  display: block;
-}
-
-.demo-button strong {
-  font-size: 12px;
-}
-
-.demo-button small {
-  color: #7a857e;
-  font-size: 10px;
-  margin-top: 2px;
-}
-
-.demo-arrow {
-  margin-left: auto;
-  font-size: 18px;
-}
-
-.demo-details {
-  margin-top: 18px;
-  padding: 12px;
-  border-radius: 10px;
-  background: #f6f7f5;
-  font-size: 10px;
-  color: #89918c;
-}
-
-.demo-details>span {
-  display: block;
-  margin-bottom: 6px;
-}
-
-.demo-details div {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
-}
-
-.demo-details code {
-  padding: 4px 7px;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  color: var(--green);
-}
-
 .login-footer {
   text-align: center;
   color: #9ba39e;
@@ -1841,10 +1740,6 @@ body {
 
   .login-box h1 {
     font-size: 38px;
-  }
-
-  .login-decoration {
-    display: none;
   }
 
   .profile-header {
@@ -2337,12 +2232,7 @@ body {
 .app-loading p {
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.9rem;
-  letter-spacing: 0.05em;
-}
-
 /* ── Auth Tabs (Login / Register) ──────────────── */
-
-/* ── Auth Tabs (Login / Register) ── */
 
 .auth-tabs {
     display: flex;
@@ -2378,12 +2268,13 @@ body {
     color: #ffffff;
     box-shadow: 0 2px 6px rgba(18, 63, 43, 0.18);
 }
+
 /* ── Expense List Loading State ─────────────────── */
 
 .loading-state {
   text-align: center;
   padding: 60px 24px;
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
+  color: var(--muted);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
 }

@@ -238,21 +238,17 @@ SIMPLE_JWT = {
 # CORS
 # =========================================================
 
-# Local React development
+# Local React development and deployed frontend
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
     "https://spendwise-frontend-4bik.onrender.com",
 ]
-CORS_ALLOW_CREDENTIALS = True
-# Add deployed React URL through environment variable later.
-FRONTEND_URL = os.getenv("FRONTEND_URL")
 
-if FRONTEND_URL:
-    CORS_ALLOWED_ORIGINS.append(
-        FRONTEND_URL.rstrip("/")
-    )
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+if FRONTEND_URL and FRONTEND_URL.rstrip("/") not in CORS_ALLOWED_ORIGINS:
+    CORS_ALLOWED_ORIGINS.append(FRONTEND_URL.rstrip("/"))
 
 CORS_ALLOW_CREDENTIALS = True
 
