@@ -49,7 +49,16 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        user = authenticate(request, username=email, password=password)
+        email = (email or "").strip()
+        try:
+            user_obj = User.objects.get(email__iexact=email)
+            username_to_auth = user_obj.email
+        except (User.DoesNotExist, User.MultipleObjectsReturned):
+            username_to_auth = email.lower()
+
+        user = authenticate(request, username=username_to_auth, password=password)
+        if not user and username_to_auth != email:
+            user = authenticate(request, username=email, password=password)
 
         if not user:
             return Response(
