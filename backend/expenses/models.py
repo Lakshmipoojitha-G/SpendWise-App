@@ -22,6 +22,14 @@ class Expense(models.Model):
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     date = models.DateField()
+
+    # Bill / Receipt Attachment & Verification
+    receipt = models.FileField(upload_to="receipts/", null=True, blank=True)
+    receipt_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, null=True, blank=True
+    )
+    receipt_verified = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

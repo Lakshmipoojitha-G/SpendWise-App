@@ -7,6 +7,7 @@ function ExpenseItem({
     onUpdate,
 }) {
     const [editing, setEditing] = useState(false);
+    const [showReceipt, setShowReceipt] = useState(false);
 
     const [form, setForm] = useState({
         description: expense.description,
@@ -181,6 +182,17 @@ function ExpenseItem({
                     ₹{Number(expense.amount).toLocaleString("en-IN")}
                 </strong>
 
+                {expense.receipt_url && (
+                    <button
+                        type="button"
+                        className={`receipt-badge ${expense.receipt_verified ? "verified" : "unverified"}`}
+                        onClick={() => setShowReceipt(true)}
+                        title={expense.receipt_verified ? "Bill verified" : "Bill amount mismatch"}
+                    >
+                        🧾 {expense.receipt_verified ? "Receipt ✓" : "Receipt ⚠"}
+                    </button>
+                )}
+
                 <button
                     className="edit-button"
                     onClick={() => setEditing(true)}
@@ -195,6 +207,51 @@ function ExpenseItem({
                     Delete
                 </button>
             </div>
+
+            {/* RECEIPT VIEWER MODAL */}
+            {showReceipt && expense.receipt_url && (
+                <div className="receipt-modal-overlay" onClick={() => setShowReceipt(false)}>
+                    <div className="receipt-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="receipt-modal-header">
+                            <div>
+                                <span className="eyebrow">BILL / RECEIPT</span>
+                                <h3>{expense.description}</h3>
+                            </div>
+                            <button className="close-button" onClick={() => setShowReceipt(false)}>×</button>
+                        </div>
+
+                        <div className="receipt-modal-amounts">
+                            <div className="receipt-amount-row">
+                                <span>Entered Amount</span>
+                                <strong>₹{Number(expense.amount).toLocaleString("en-IN")}</strong>
+                            </div>
+                            {expense.receipt_amount && (
+                                <div className="receipt-amount-row">
+                                    <span>Bill Amount</span>
+                                    <strong>₹{Number(expense.receipt_amount).toLocaleString("en-IN")}</strong>
+                                </div>
+                            )}
+                            <div className={expense.receipt_verified ? "amount-match" : "amount-mismatch"}>
+                                {expense.receipt_verified
+                                    ? "✓ Bill amount matches the entered amount."
+                                    : "⚠ Bill amount does not match the entered amount. Please review."
+                                }
+                            </div>
+                        </div>
+
+                        <div className="receipt-modal-image">
+                            {expense.receipt_url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                                <img src={expense.receipt_url} alt="Receipt" />
+                            ) : (
+                                <a href={expense.receipt_url} target="_blank" rel="noopener noreferrer"
+                                   className="receipt-pdf-link">
+                                    📄 Open Receipt (PDF)
+                                </a>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </article>
     );
 }

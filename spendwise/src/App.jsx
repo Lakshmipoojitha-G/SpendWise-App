@@ -37,6 +37,12 @@ function App() {
   const [expenseForm, setExpenseForm] = useState(emptyExpense);
   const [budgetInput, setBudgetInput] = useState("");
 
+  // Receipt upload state
+  const [receiptFile, setReceiptFile] = useState(null);
+  const [receiptPreview, setReceiptPreview] = useState(null);
+  const [receiptAmount, setReceiptAmount] = useState("");
+  const [receiptDragOver, setReceiptDragOver] = useState(false);
+
   const [toast, setToast] = useState("");
   const [profileUser, setProfileUser] = useState(null);
   const [dataLoading, setDataLoading] = useState(false);
@@ -196,6 +202,22 @@ function App() {
 
   function closeExpenseDrawer() {
     setShowExpenseDrawer(false);
+    setReceiptFile(null);
+    setReceiptPreview(null);
+    setReceiptAmount("");
+    setReceiptDragOver(false);
+  }
+
+  function handleReceiptFile(file) {
+    if (!file) return;
+    setReceiptFile(file);
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => setReceiptPreview(e.target.result);
+      reader.readAsDataURL(file);
+    } else {
+      setReceiptPreview(null);
+    }
   }
 
   function handleExpenseChange(event) {
@@ -227,11 +249,16 @@ function App() {
         category: expenseForm.category,
         amount: Number(expenseForm.amount),
         date: expenseForm.date,
+        receipt: receiptFile || null,
+        receiptAmount: receiptAmount !== "" ? Number(receiptAmount) : null,
       });
 
       setExpenses((prev) => [newExpense, ...prev]);
       setShowExpenseDrawer(false);
       setExpenseForm(emptyExpense);
+      setReceiptFile(null);
+      setReceiptPreview(null);
+      setReceiptAmount("");
       setToast("Expense added successfully!");
     } catch (err) {
       setToast(err?.error || "Failed to add expense.");
@@ -648,6 +675,73 @@ function App() {
                 value={expenseForm.date}
                 onChange={handleExpenseChange}
               />
+
+              {/* ── RECEIPT UPLOAD ────────────────────────────── */}
+              <label>Bill / Receipt <span className="optional-label">(Optional)</span></label>
+
+              {!receiptFile ? (
+                <div
+                  className={`receipt-upload-zone${receiptDragOver ? " drag-over" : ""}`}
+                  onDragOver={(e) => { e.preventDefault(); setReceiptDragOver(true); }}
+                  onDragLeave={() => setReceiptDragOver(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setReceiptDragOver(false);
+                    handleReceiptFile(e.dataTransfer.files[0]);
+                  }}
+                  onClick={() => document.getElementById("receipt-input").click()}
+                >
+                  <span className="upload-icon">🧾</span>
+                  <span>Drop your bill here or <u>click to upload</u></span>
+                  <span className="upload-hint">Supports JPG, PNG, PDF</span>
+                  <input
+                    id="receipt-input"
+                    type="file"
+                    accept="image/*,application/pdf"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleReceiptFile(e.target.files[0])}
+                  />
+                </div>
+              ) : (
+                <div className="receipt-preview-container">
+                  {receiptPreview ? (
+                    <img src={receiptPreview} alt="Receipt preview" className="receipt-thumb" />
+                  ) : (
+                    <div className="receipt-file-icon">📄 {receiptFile.name}</div>
+                  )}
+                  <button
+                    type="button"
+                    className="receipt-remove-btn"
+                    onClick={() => { setReceiptFile(null); setReceiptPreview(null); setReceiptAmount(""); }}
+                  >✕ Remove</button>
+                </div>
+              )}
+
+              {receiptFile && (
+                <>
+                  <label>Bill Amount <span className="optional-label">(Enter amount shown on bill)</span></label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={receiptAmount}
+                    onChange={(e) => setReceiptAmount(e.target.value)}
+                    placeholder="₹0.00"
+                  />
+                  {receiptAmount !== "" && expenseForm.amount !== "" && (
+                    <div className={
+                      Math.abs(Number(receiptAmount) - Number(expenseForm.amount)) < 0.01
+                        ? "amount-match"
+                        : "amount-mismatch"
+                    }>
+                      {Math.abs(Number(receiptAmount) - Number(expenseForm.amount)) < 0.01
+                        ? `✓ Bill amount ₹${Number(receiptAmount).toLocaleString("en-IN")} matches your entered amount.`
+                        : `⚠ Bill shows ₹${Number(receiptAmount).toLocaleString("en-IN")} but you entered ₹${Number(expenseForm.amount).toLocaleString("en-IN")}. Please verify.`
+                      }
+                    </div>
+                  )}
+                </>
+              )}
 
               <button className="primary-button full">
                 Save Expense

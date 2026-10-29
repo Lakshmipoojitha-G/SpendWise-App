@@ -201,6 +201,13 @@ STATICFILES_STORAGE = (
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# =========================================================
+# MEDIA FILES (Receipts & Uploads)
+# =========================================================
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 
 # =========================================================
 # DJANGO REST FRAMEWORK
