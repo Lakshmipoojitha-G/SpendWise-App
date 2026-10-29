@@ -23,6 +23,40 @@ export function clearTokens() {
 
 // ─── Core Fetch Wrapper ─────────────────────────────────────────────────────
 
+// Used for multipart/form-data requests (file uploads).
+// Do NOT set Content-Type manually — browser sets it with boundary for FormData.
+async function requestFormData(path, formData, method = "POST", retry = true) {
+  const token = getAccessToken();
+  const headers = {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method,
+    headers,
+    body: formData,
+  });
+
+  if (res.status === 401 && retry) {
+    const refreshed = await tryRefreshToken();
+    if (refreshed) {
+      return requestFormData(path, formData, method, false);
+    } else {
+      clearTokens();
+      window.location.reload();
+      return;
+    }
+  }
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ error: "Request failed" }));
+    throw error;
+  }
+
+  if (res.status === 204) return null;
+  return res.json();
+}
+
 async function request(path, options = {}, retry = true) {
   const token = getAccessToken();
 
@@ -139,18 +173,28 @@ export const expensesAPI = {
     return request(`/expenses/${qs ? "?" + qs : ""}`);
   },
 
-  async create({ description, category, amount, date }) {
-    return request("/expenses/", {
-      method: "POST",
-      body: JSON.stringify({ description, category, amount, date }),
-    });
+  async create({ description, category, amount, date, receipt, receiptAmount }) {
+    const fd = new FormData();
+    fd.append("description", description);
+    fd.append("category", category);
+    fd.append("amount", amount);
+    fd.append("date", date);
+    if (receipt) {
+      fd.append("receipt", receipt);
+      if (receiptAmount !== null && receiptAmount !== undefined && receiptAmount !== "") {
+        fd.append("receipt_amount", receiptAmount);
+      }
+    }
+    return requestFormData("/expenses/", fd, "POST");
   },
 
   async update(id, { description, category, amount, date }) {
-    return request(`/expenses/${id}/`, {
-      method: "PATCH",
-      body: JSON.stringify({ description, category, amount, date }),
-    });
+    const fd = new FormData();
+    fd.append("description", description);
+    fd.append("category", category);
+    fd.append("amount", amount);
+    fd.append("date", date);
+    return requestFormData(`/expenses/${id}/`, fd, "PATCH");
   },
 
   async delete(id) {

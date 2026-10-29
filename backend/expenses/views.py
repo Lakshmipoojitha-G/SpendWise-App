@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions, filters
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from .models import Expense
 from .serializers import ExpenseSerializer
 
@@ -6,6 +7,7 @@ from .serializers import ExpenseSerializer
 class ExpenseViewSet(viewsets.ModelViewSet):
     serializer_class = ExpenseSerializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["description", "category"]
     ordering_fields = ["date", "amount", "created_at"]
