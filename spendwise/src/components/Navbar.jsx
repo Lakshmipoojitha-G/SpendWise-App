@@ -1,7 +1,10 @@
+
 import { useEffect, useRef, useState } from "react";
 
 function Navbar({
     user,
+    theme,
+    onToggleTheme,
     onDashboard,
     onTransactions,
     onAnalytics,
@@ -51,13 +54,26 @@ function Navbar({
         onAnalytics();
     }
 
+    function handleProfile() {
+        setMobileOpen(false);
+        setOpen(false);
+        onProfile();
+    }
+
+    function handleThemeToggle() {
+        setMobileOpen(false);
+        onToggleTheme();
+    }
+
     return (
         <nav className="navbar">
+
             {/* BRAND */}
 
             <button
                 className="navbar-brand"
                 onClick={handleDashboard}
+                type="button"
             >
                 <span className="brand-mark">S</span>
 
@@ -94,6 +110,35 @@ function Navbar({
             {/* RIGHT SIDE */}
 
             <div className="navbar-right">
+
+                {/* THEME TOGGLE */}
+
+                <button
+                    className="navbar-theme-toggle"
+                    onClick={handleThemeToggle}
+                    type="button"
+                    aria-label={
+                        theme === "light"
+                            ? "Switch to dark mode"
+                            : "Switch to light mode"
+                    }
+                    title={
+                        theme === "light"
+                            ? "Switch to dark mode"
+                            : "Switch to light mode"
+                    }
+                >
+                    <span className="theme-icon">
+                        {theme === "light" ? "🌙" : "☀️"}
+                    </span>
+
+                    <span className="theme-label">
+                        {theme === "light" ? "Dark Mode" : "Light Mode"}
+                    </span>
+                </button>
+
+                {/* PROFILE MENU */}
+
                 <div
                     className="profile-menu"
                     ref={dropdownRef}
@@ -101,6 +146,7 @@ function Navbar({
                     <button
                         className="profile-button"
                         onClick={() => setOpen(!open)}
+                        type="button"
                     >
                         <span className="avatar">
                             {(user?.name || "U").charAt(0).toUpperCase()}
@@ -111,8 +157,9 @@ function Navbar({
                         </span>
 
                         <span
-                            className={`profile-arrow ${open ? "rotate" : ""
-                                }`}
+                            className={`profile-arrow ${
+                                open ? "rotate" : ""
+                            }`}
                         >
                             ↓
                         </span>
@@ -120,9 +167,12 @@ function Navbar({
 
                     {open && (
                         <div className="profile-dropdown">
+
                             <div className="dropdown-user">
                                 <div className="dropdown-avatar">
-                                    {(user?.name || "U").charAt(0).toUpperCase()}
+                                    {(user?.name || "U")
+                                        .charAt(0)
+                                        .toUpperCase()}
                                 </div>
 
                                 <div>
@@ -131,12 +181,7 @@ function Navbar({
                                 </div>
                             </div>
 
-                            <button
-                                onClick={() => {
-                                    setOpen(false);
-                                    onProfile();
-                                }}
-                            >
+                            <button onClick={handleProfile}>
                                 <span>◉</span>
                                 My Profile
                             </button>
@@ -160,6 +205,8 @@ function Navbar({
                 <button
                     className="mobile-menu-button"
                     onClick={() => setMobileOpen(!mobileOpen)}
+                    type="button"
+                    aria-label="Toggle navigation menu"
                 >
                     {mobileOpen ? "×" : "☰"}
                 </button>
@@ -169,6 +216,7 @@ function Navbar({
 
             {mobileOpen && (
                 <div className="mobile-nav">
+
                     <button onClick={handleDashboard}>
                         <span>⌂</span>
                         Dashboard
@@ -184,14 +232,24 @@ function Navbar({
                         Analytics
                     </button>
 
-                    <button
-                        onClick={() => {
-                            setMobileOpen(false);
-                            onProfile();
-                        }}
-                    >
+                    <button onClick={handleProfile}>
                         <span>◉</span>
                         My Profile
+                    </button>
+
+                    {/* MOBILE THEME TOGGLE */}
+
+                    <button
+                        onClick={handleThemeToggle}
+                        className="mobile-theme-button"
+                    >
+                        <span>
+                            {theme === "light" ? "🌙" : "☀️"}
+                        </span>
+
+                        {theme === "light"
+                            ? "Switch to Dark Mode"
+                            : "Switch to Light Mode"}
                     </button>
                 </div>
             )}
