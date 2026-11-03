@@ -7,6 +7,7 @@ import Profile from "./components/Profile";
 import SummaryCard from "./components/SummaryCard";
 import ExpenseList from "./components/ExpenseList";
 import CategoryAnalytics from "./components/CategoryAnalytics";
+import DailyQuote from "./components/DailyQuote";
 
 import { authAPI, expensesAPI, budgetAPI, getAccessToken } from "./api";
 import { CATEGORIES, CATEGORY_ICONS } from "./constants";
@@ -47,6 +48,23 @@ function App() {
   const [profileUser, setProfileUser] = useState(null);
   const [dataLoading, setDataLoading] = useState(false);
 
+  // Theme preference
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("spendwise-theme") || "light"
+  );
+
+  // Save theme preference
+  useEffect(() => {
+    localStorage.setItem("spendwise-theme", theme);
+  }, [theme]);
+
+  // Toggle theme
+  function toggleTheme() {
+    setTheme((currentTheme) =>
+      currentTheme === "light" ? "dark" : "light"
+    );
+  }
+
   /* ---------------- RESTORE SESSION ON MOUNT ---------------- */
 
   useEffect(() => {
@@ -60,8 +78,10 @@ function App() {
           // Token invalid — stay on login
         }
       }
+
       setAuthChecked(true);
     }
+
     checkSession();
   }, []);
 
@@ -69,19 +89,24 @@ function App() {
 
   const loadUserData = useCallback(async (user) => {
     if (!user) return;
+
     setDataLoading(true);
+
     try {
       const [expensesData, budgetData] = await Promise.all([
         expensesAPI.getAll(),
         budgetAPI.get(),
       ]);
-      // DRF returns paginated results or array
+
       const list = Array.isArray(expensesData)
         ? expensesData
         : expensesData?.results || [];
+
       setExpenses(list);
       setBudget(Number(budgetData?.amount) || 0);
-      setBudgetInput(budgetData?.amount ? String(budgetData.amount) : "");
+      setBudgetInput(
+        budgetData?.amount ? String(budgetData.amount) : ""
+      );
     } catch (err) {
       console.error("Failed to load data:", err);
     } finally {
@@ -99,7 +124,9 @@ function App() {
 
   useEffect(() => {
     if (!toast) return;
+
     const timer = setTimeout(() => setToast(""), 2500);
+
     return () => clearTimeout(timer);
   }, [toast]);
 
@@ -119,26 +146,34 @@ function App() {
 
   const categoryTotals = useMemo(() => {
     const totals = {};
+
     expenses.forEach((expense) => {
-      if (!totals[expense.category]) totals[expense.category] = 0;
+      if (!totals[expense.category]) {
+        totals[expense.category] = 0;
+      }
+
       totals[expense.category] += Number(expense.amount);
     });
+
     return totals;
   }, [expenses]);
 
   const highestCategory = useMemo(() => {
     const entries = Object.entries(categoryTotals);
+
     if (!entries.length) return null;
+
     return entries.sort((a, b) => b[1] - a[1])[0];
   }, [categoryTotals]);
 
-  /* ---------------- FILTER (client-side on fetched data) -------- */
+  /* ---------------- FILTER EXPENSES ---------------- */
 
   const filteredExpenses = useMemo(() => {
     let result = [...expenses];
 
     if (search.trim()) {
       const query = search.toLowerCase();
+
       result = result.filter(
         (expense) =>
           expense.description.toLowerCase().includes(query) ||
@@ -147,13 +182,30 @@ function App() {
     }
 
     if (categoryFilter !== "All") {
-      result = result.filter((expense) => expense.category === categoryFilter);
+      result = result.filter(
+        (expense) => expense.category === categoryFilter
+      );
     }
 
-    if (sortBy === "latest") result.sort((a, b) => new Date(b.date) - new Date(a.date));
-    if (sortBy === "oldest") result.sort((a, b) => new Date(a.date) - new Date(b.date));
-    if (sortBy === "highest") result.sort((a, b) => Number(b.amount) - Number(a.amount));
-    if (sortBy === "lowest") result.sort((a, b) => Number(a.amount) - Number(b.amount));
+    if (sortBy === "latest") {
+      result.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    if (sortBy === "oldest") {
+      result.sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
+
+    if (sortBy === "highest") {
+      result.sort(
+        (a, b) => Number(b.amount) - Number(a.amount)
+      );
+    }
+
+    if (sortBy === "lowest") {
+      result.sort(
+        (a, b) => Number(a.amount) - Number(b.amount)
+      );
+    }
 
     return result;
   }, [expenses, search, categoryFilter, sortBy]);
@@ -164,7 +216,10 @@ function App() {
     setCurrentUser(user);
     setProfileUser(user);
     setCurrentPage("dashboard");
-    setToast(`Welcome${user.name ? ", " + user.name.split(" ")[0] : ""}! 🎉`);
+
+    setToast(
+      `Welcome${user.name ? ", " + user.name.split(" ")[0] : ""}! 🎉`
+    );
   }
 
   /* ---------------- LOGOUT ---------------- */
@@ -175,6 +230,7 @@ function App() {
 
   async function handleLogout() {
     await authAPI.logout();
+
     setCurrentUser(null);
     setExpenses([]);
     setBudget(0);
@@ -197,6 +253,7 @@ function App() {
       ...emptyExpense,
       date: new Date().toISOString().split("T")[0],
     });
+
     setShowExpenseDrawer(true);
   }
 
@@ -210,9 +267,12 @@ function App() {
 
   function handleReceiptFile(file) {
     if (!file) return;
+
     setReceiptFile(file);
+
     if (file.type.startsWith("image/")) {
       const reader = new FileReader();
+
       reader.onload = (e) => setReceiptPreview(e.target.result);
       reader.readAsDataURL(file);
     } else {
@@ -222,7 +282,11 @@ function App() {
 
   function handleExpenseChange(event) {
     const { name, value } = event.target;
-    setExpenseForm((prev) => ({ ...prev, [name]: value }));
+
+    setExpenseForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   }
 
   async function addExpense(event) {
@@ -250,7 +314,8 @@ function App() {
         amount: Number(expenseForm.amount),
         date: expenseForm.date,
         receipt: receiptFile || null,
-        receiptAmount: receiptAmount !== "" ? Number(receiptAmount) : null,
+        receiptAmount:
+          receiptAmount !== "" ? Number(receiptAmount) : null,
       });
 
       setExpenses((prev) => [newExpense, ...prev]);
@@ -259,6 +324,7 @@ function App() {
       setReceiptFile(null);
       setReceiptPreview(null);
       setReceiptAmount("");
+
       setToast("Expense added successfully!");
     } catch (err) {
       setToast(err?.error || "Failed to add expense.");
@@ -268,6 +334,7 @@ function App() {
   async function deleteExpense(id) {
     try {
       await expensesAPI.delete(id);
+
       setExpenses((prev) => prev.filter((e) => e.id !== id));
       setToast("Expense deleted.");
     } catch {
@@ -283,9 +350,11 @@ function App() {
         amount: updatedExpense.amount,
         date: updatedExpense.date,
       });
+
       setExpenses((prev) =>
         prev.map((e) => (e.id === saved.id ? saved : e))
       );
+
       setToast("Expense updated successfully!");
     } catch {
       setToast("Failed to update expense.");
@@ -298,6 +367,7 @@ function App() {
     event.preventDefault();
 
     const amount = Number(budgetInput);
+
     if (!amount || amount <= 0) {
       setToast("Please enter a valid budget.");
       return;
@@ -305,6 +375,7 @@ function App() {
 
     try {
       const saved = await budgetAPI.set(amount);
+
       setBudget(Number(saved.amount));
       setShowBudgetModal(false);
       setToast("Monthly budget updated!");
@@ -313,28 +384,40 @@ function App() {
     }
   }
 
-  /* ---------------- INSIGHT ---------------- */
+  /* ---------------- SMART INSIGHT ---------------- */
 
   function getInsight() {
-    if (!expenses.length)
+    if (!expenses.length) {
       return "Start by adding your first expense. SpendWise will automatically analyze your spending.";
+    }
 
-    if (budget > 0 && totalSpent > budget)
-      return `You are ₹${(totalSpent - budget).toLocaleString("en-IN")} over your monthly budget. Consider reviewing your largest spending categories.`;
+    if (budget > 0 && totalSpent > budget) {
+      return `You are ₹${(
+        totalSpent - budget
+      ).toLocaleString("en-IN")} over your monthly budget. Consider reviewing your largest spending categories.`;
+    }
 
-    if (highestCategory)
+    if (highestCategory) {
       return `${highestCategory[0]} is currently your largest spending category at ₹${highestCategory[1].toLocaleString("en-IN")}.`;
+    }
 
     return "Your spending is being tracked successfully.";
   }
+
+  /* ---------------- THEME CLASS ---------------- */
+
+  const themeClass =
+    theme === "dark" ? "theme-dark" : "theme-light";
 
   /* ---------------- AUTH LOADING STATE ---------------- */
 
   if (!authChecked) {
     return (
-      <div className="app-loading">
-        <div className="brand-mark large">S</div>
-        <p>Loading SpendWise…</p>
+      <div className={`app ${themeClass}`}>
+        <div className="app-loading">
+          <div className="brand-mark large">S</div>
+          <p>Loading SpendWise…</p>
+        </div>
       </div>
     );
   }
@@ -342,46 +425,62 @@ function App() {
   /* ---------------- LOGIN SCREEN ---------------- */
 
   if (!currentUser) {
-    return <Login onLogin={handleLogin} />;
+    return (
+      <div className={`app ${themeClass}`}>
+        <Login onLogin={handleLogin} />
+      </div>
+    );
   }
 
   /* ---------------- PROFILE PAGE ---------------- */
 
   if (currentPage === "profile") {
     return (
-      <Profile
-        user={profileUser || currentUser}
-        onSave={handleProfileSave}
-        onLogout={handleLogout}
-        onBack={() => setCurrentPage("dashboard")}
-      />
+      <div className={`app ${themeClass}`}>
+        <Profile
+          user={profileUser || currentUser}
+          onSave={handleProfileSave}
+          onLogout={handleLogout}
+          onBack={() => setCurrentPage("dashboard")}
+        />
+      </div>
     );
   }
 
   /* ---------------- DASHBOARD ---------------- */
 
   return (
-    <div className="app">
+    <div className={`app ${themeClass}`}>
       <Navbar
         user={currentUser}
+        theme={theme}
+onToggleTheme={toggleTheme}
         onDashboard={() => {
           setCurrentPage("dashboard");
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}
         onTransactions={() => {
           setCurrentPage("dashboard");
+
           setTimeout(() => {
             document
               .getElementById("transactions")
-              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+              ?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
           }, 50);
         }}
         onAnalytics={() => {
           setCurrentPage("dashboard");
+
           setTimeout(() => {
             document
               .getElementById("analytics")
-              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+              ?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
           }, 50);
         }}
         onProfile={() => setCurrentPage("profile")}
@@ -389,6 +488,7 @@ function App() {
       />
 
       <main className="dashboard">
+
         {/* HERO */}
 
         <section className="hero">
@@ -407,12 +507,17 @@ function App() {
             </p>
           </div>
 
-          <button
-            className="primary-button"
-            onClick={openExpenseDrawer}
-          >
-            + Add Expense
-          </button>
+          <div className="hero-actions">
+           
+
+            <button
+              className="primary-button"
+              onClick={openExpenseDrawer}
+              type="button"
+            >
+              + Add Expense
+            </button>
+          </div>
         </section>
 
         {/* SUMMARY */}
@@ -495,7 +600,11 @@ function App() {
           )}
         </section>
 
-        {/* INSIGHT */}
+        {/* DAILY MONEY WISDOM */}
+
+        <DailyQuote />
+
+        {/* SMART INSIGHT */}
 
         <section className="insight-card">
           <div className="insight-icon">✦</div>
@@ -535,7 +644,9 @@ function App() {
 
             <select
               value={categoryFilter}
-              onChange={(event) => setCategoryFilter(event.target.value)}
+              onChange={(event) =>
+                setCategoryFilter(event.target.value)
+              }
             >
               <option value="All">All Categories</option>
 
@@ -638,6 +749,7 @@ function App() {
 
             <form onSubmit={addExpense}>
               <label>Description</label>
+
               <input
                 name="description"
                 value={expenseForm.description}
@@ -646,6 +758,7 @@ function App() {
               />
 
               <label>Category</label>
+
               <select
                 name="category"
                 value={expenseForm.category}
@@ -659,6 +772,7 @@ function App() {
               </select>
 
               <label>Amount</label>
+
               <input
                 name="amount"
                 type="number"
@@ -669,6 +783,7 @@ function App() {
               />
 
               <label>Date</label>
+
               <input
                 name="date"
                 type="date"
@@ -676,50 +791,87 @@ function App() {
                 onChange={handleExpenseChange}
               />
 
-              {/* ── RECEIPT UPLOAD ────────────────────────────── */}
-              <label>Bill / Receipt <span className="optional-label">(Optional)</span></label>
+              {/* RECEIPT UPLOAD */}
+
+              <label>
+                Bill / Receipt{" "}
+                <span className="optional-label">(Optional)</span>
+              </label>
 
               {!receiptFile ? (
                 <div
-                  className={`receipt-upload-zone${receiptDragOver ? " drag-over" : ""}`}
-                  onDragOver={(e) => { e.preventDefault(); setReceiptDragOver(true); }}
+                  className={`receipt-upload-zone${
+                    receiptDragOver ? " drag-over" : ""
+                  }`}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setReceiptDragOver(true);
+                  }}
                   onDragLeave={() => setReceiptDragOver(false)}
                   onDrop={(e) => {
                     e.preventDefault();
                     setReceiptDragOver(false);
                     handleReceiptFile(e.dataTransfer.files[0]);
                   }}
-                  onClick={() => document.getElementById("receipt-input").click()}
+                  onClick={() =>
+                    document.getElementById("receipt-input").click()
+                  }
                 >
                   <span className="upload-icon">🧾</span>
-                  <span>Drop your bill here or <u>click to upload</u></span>
-                  <span className="upload-hint">Supports JPG, PNG, PDF</span>
+                  <span>
+                    Drop your bill here or <u>click to upload</u>
+                  </span>
+                  <span className="upload-hint">
+                    Supports JPG, PNG, PDF
+                  </span>
+
                   <input
                     id="receipt-input"
                     type="file"
                     accept="image/*,application/pdf"
                     style={{ display: "none" }}
-                    onChange={(e) => handleReceiptFile(e.target.files[0])}
+                    onChange={(e) =>
+                      handleReceiptFile(e.target.files[0])
+                    }
                   />
                 </div>
               ) : (
                 <div className="receipt-preview-container">
                   {receiptPreview ? (
-                    <img src={receiptPreview} alt="Receipt preview" className="receipt-thumb" />
+                    <img
+                      src={receiptPreview}
+                      alt="Receipt preview"
+                      className="receipt-thumb"
+                    />
                   ) : (
-                    <div className="receipt-file-icon">📄 {receiptFile.name}</div>
+                    <div className="receipt-file-icon">
+                      📄 {receiptFile.name}
+                    </div>
                   )}
+
                   <button
                     type="button"
                     className="receipt-remove-btn"
-                    onClick={() => { setReceiptFile(null); setReceiptPreview(null); setReceiptAmount(""); }}
-                  >✕ Remove</button>
+                    onClick={() => {
+                      setReceiptFile(null);
+                      setReceiptPreview(null);
+                      setReceiptAmount("");
+                    }}
+                  >
+                    ✕ Remove
+                  </button>
                 </div>
               )}
 
               {receiptFile && (
                 <>
-                  <label>Bill Amount <span className="optional-label">(Enter amount shown on bill)</span></label>
+                  <label>
+                    Bill Amount{" "}
+                    <span className="optional-label">
+                      (Enter amount shown on bill)
+                    </span>
+                  </label>
+
                   <input
                     type="number"
                     min="0"
@@ -728,16 +880,30 @@ function App() {
                     onChange={(e) => setReceiptAmount(e.target.value)}
                     placeholder="₹0.00"
                   />
+
                   {receiptAmount !== "" && expenseForm.amount !== "" && (
-                    <div className={
-                      Math.abs(Number(receiptAmount) - Number(expenseForm.amount)) < 0.01
-                        ? "amount-match"
-                        : "amount-mismatch"
-                    }>
-                      {Math.abs(Number(receiptAmount) - Number(expenseForm.amount)) < 0.01
-                        ? `✓ Bill amount ₹${Number(receiptAmount).toLocaleString("en-IN")} matches your entered amount.`
-                        : `⚠ Bill shows ₹${Number(receiptAmount).toLocaleString("en-IN")} but you entered ₹${Number(expenseForm.amount).toLocaleString("en-IN")}. Please verify.`
+                    <div
+                      className={
+                        Math.abs(
+                          Number(receiptAmount) -
+                            Number(expenseForm.amount)
+                        ) < 0.01
+                          ? "amount-match"
+                          : "amount-mismatch"
                       }
+                    >
+                      {Math.abs(
+                        Number(receiptAmount) -
+                          Number(expenseForm.amount)
+                      ) < 0.01
+                        ? `✓ Bill amount ₹${Number(
+                            receiptAmount
+                          ).toLocaleString("en-IN")} matches your entered amount.`
+                        : `⚠ Bill shows ₹${Number(
+                            receiptAmount
+                          ).toLocaleString("en-IN")} but you entered ₹${Number(
+                            expenseForm.amount
+                          ).toLocaleString("en-IN")}. Please verify.`}
                     </div>
                   )}
                 </>

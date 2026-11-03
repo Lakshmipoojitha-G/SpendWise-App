@@ -2546,3 +2546,415 @@ body {
 .receipt-pdf-link:hover {
   background: var(--border);
 }
+
+/* DAILY MONEY WISDOM */
+
+.daily-quote {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin: 25px 0;
+  padding: 30px;
+  background: linear-gradient(120deg, #e8f1e9, #f5f8f2);
+  border: 1px solid #dce8de;
+  border-radius: 20px;
+  overflow: hidden;
+  animation: fadeUp 0.6s ease;
+}
+
+.daily-quote-icon {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: #123f2b;
+  color: white;
+  font-size: 25px;
+}
+
+.daily-quote-content {
+  position: relative;
+  z-index: 1;
+}
+
+.daily-quote blockquote {
+  margin: 8px 0;
+  max-width: 750px;
+  color: #123f2b;
+  font-size: clamp(17px, 2vw, 23px);
+  font-weight: 600;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.quote-author {
+  color: #68736c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.quote-decoration {
+  position: absolute;
+  right: 25px;
+  bottom: -45px;
+  font-size: 160px;
+  color: rgba(18, 63, 43, 0.06);
+}
+
+@media (max-width: 600px) {
+  .daily-quote {
+    padding: 20px;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .daily-quote-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 20px;
+  }
+}
+
+/* ==============================
+   DAILY MONEY WISDOM
+================================ */
+
+.daily-quote-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin: 25px 0;
+  padding: 30px;
+  background: linear-gradient(120deg, #e8f1e9, #f5f8f2);
+  border: 1px solid #dce8de;
+  border-radius: 20px;
+  overflow: hidden;
+  animation: fadeUp 0.6s ease;
+}
+
+.daily-quote-symbol {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: #123f2b;
+  color: white;
+  font-size: 25px;
+}
+
+.daily-quote-content {
+  position: relative;
+  z-index: 1;
+}
+
+.daily-quote-label {
+  display: block;
+  color: #758178;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.daily-quote-card blockquote {
+  margin: 12px 0;
+  max-width: 750px;
+  color: #123f2b;
+  font-size: clamp(17px, 2vw, 23px);
+  font-weight: 600;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.daily-quote-author {
+  color: #68736c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.daily-quote-decoration {
+  position: absolute;
+  right: 25px;
+  bottom: -45px;
+  color: rgba(18, 63, 43, 0.06);
+  font-size: 160px;
+  pointer-events: none;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+  .daily-quote-card {
+    padding: 20px;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .daily-quote-symbol {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 20px;
+  }
+
+  .daily-quote-card blockquote {
+    font-size: 17px;
+  }
+}
+
+/* ========================================
+   THEME TOGGLE BUTTON
+======================================== */
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.theme-toggle {
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid #dce4dd;
+  background: #ffffff;
+  color: #173f2d;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+}
+
+/* ========================================
+   DARK THEME
+======================================== */
+
+.app.theme-dark {
+  min-height: 100vh;
+  background: #101827;
+  color: #e5e7eb;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.app.theme-dark .dashboard {
+  background: transparent;
+}
+
+.app.theme-dark h1,
+.app.theme-dark h2,
+.app.theme-dark h3,
+.app.theme-dark h4,
+.app.theme-dark p,
+.app.theme-dark label {
+  color: #e5e7eb;
+}
+
+.app.theme-dark .eyebrow {
+  color: #9ca3af;
+}
+
+/* Cards and sections */
+
+.app.theme-dark .hero,
+.app.theme-dark .budget-card,
+.app.theme-dark .insight-card,
+.app.theme-dark .summary-card,
+.app.theme-dark .section-block,
+.app.theme-dark .habits,
+.app.theme-dark .habit-grid > div {
+  background: #1e293b;
+  color: #e5e7eb;
+  border-color: #334155;
+}
+
+/* Daily quote */
+
+.app.theme-dark .daily-quote-card {
+  background: linear-gradient(120deg, #1b352d, #243b34);
+  border-color: #365447;
+}
+
+.app.theme-dark .daily-quote-card blockquote {
+  color: #e5f5e9;
+}
+
+.app.theme-dark .daily-quote-label,
+.app.theme-dark .daily-quote-author {
+  color: #b4c8bb;
+}
+
+/* Inputs */
+
+.app.theme-dark input,
+.app.theme-dark select,
+.app.theme-dark textarea {
+  background: #111c2e;
+  color: #e5e7eb;
+  border: 1px solid #475569;
+}
+
+.app.theme-dark input::placeholder,
+.app.theme-dark textarea::placeholder {
+  color: #94a3b8;
+}
+
+.app.theme-dark option {
+  background: #1e293b;
+  color: #e5e7eb;
+}
+
+/* Expense lists and tables */
+
+.app.theme-dark .expense-list,
+.app.theme-dark .expense-item,
+.app.theme-dark .transaction-item,
+.app.theme-dark .controls {
+  background: #1e293b;
+  color: #e5e7eb;
+  border-color: #334155;
+}
+
+/* Navbar */
+
+.app.theme-dark nav,
+.app.theme-dark .navbar,
+.app.theme-dark header {
+  background: #172235;
+  color: #e5e7eb;
+  border-color: #334155;
+}
+
+/* Buttons */
+
+.app.theme-dark .theme-toggle,
+.app.theme-dark .secondary-button {
+  background: #263449;
+  color: #e5e7eb;
+  border-color: #475569;
+}
+
+.app.theme-dark .theme-toggle:hover,
+.app.theme-dark .secondary-button:hover {
+  background: #334155;
+}
+
+/* Drawer and modal */
+
+.app.theme-dark .drawer,
+.app.theme-dark .modal {
+  background: #1e293b;
+  color: #e5e7eb;
+}
+
+.app.theme-dark .drawer-header,
+.app.theme-dark .modal p {
+  color: #cbd5e1;
+}
+
+.app.theme-dark .close-button {
+  color: #e5e7eb;
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+  .hero-actions {
+    width: 100%;
+  }
+
+  .hero-actions button {
+    flex: 1;
+  }
+}
+
+/* =====================================
+   NAVBAR THEME TOGGLE
+===================================== */
+
+.navbar-theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid #dce4dd;
+    background: #ffffff;
+    color: #173f2d;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.navbar-theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.theme-icon {
+    font-size: 17px;
+}
+
+.theme-dark .navbar-theme-toggle {
+    background: #263449;
+    color: #f1f5f9;
+    border-color: #475569;
+}
+
+.theme-dark .navbar-theme-toggle:hover {
+    background: #334155;
+}
+
+/* MOBILE THEME BUTTON */
+
+.mobile-theme-button {
+    border-top: 1px solid #e5e7eb !important;
+    margin-top: 6px;
+    padding-top: 14px !important;
+}
+
+.theme-dark .mobile-theme-button {
+    border-color: #475569 !important;
+    color: #e5e7eb;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .navbar-theme-toggle {
+        padding: 9px 11px;
+        gap: 5px;
+    }
+
+    .navbar-theme-toggle .theme-label {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-theme-toggle .theme-label {
+        display: none;
+    }
+
+    .navbar-theme-toggle {
+        width: 38px;
+        height: 38px;
+        padding: 0;
+    }
+
+    .theme-icon {
+        font-size: 18px;
+    }
+}
